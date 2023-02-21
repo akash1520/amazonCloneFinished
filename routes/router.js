@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const authenticate = require("../middleware/authenticate");
 
 
+
 router.get("/getproducts", async (req, res) => {
     try {
         const productsdata = await Products.find();
@@ -88,13 +89,13 @@ router.post("/login", async (req, res) => {
             else {
                  //token generation
                  const token = await userLogin.generateAuthtoken()
-                 // console.log(token);
- 
+                // console.log("this is the token, its getting generated",token)
                  //cookie generation
-                 res.cookie("amazonWeb", token, {
-                     httpOnly: true,
-                     expires: new Date(Date.now() + 240000)
-                 })
+                res.cookie("amazonWeb",token,{
+                    httpOnly: true,
+                    SameSite: app.get("env") === "development" ? true : "none",
+                    secure: app.get("env") === "development" ? false : true,
+                  });
                 res.status(200).json(userLogin)
             }
 
